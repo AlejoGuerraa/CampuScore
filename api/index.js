@@ -4,13 +4,18 @@ const sequelize = require("./config/db");
 
 require("./models"); // inicializa todos los modelos
 
-// Controladores existentes
+// Controladores
 const {
   buscarAlumno,
   ingresarAlumno,
   editarAlumno,
+  eliminarAlumno,
+  obtenerAlumnoCompleto,
   ingresarProfesor,
   editarProfesor,
+  listarProfesores,
+  obtenerProfesor,
+  eliminarProfesor,
   listarMateriasPorCarrera,
   getConejosByAlumno,
   getNotasExamenesByAlumno,
@@ -23,6 +28,14 @@ const {
   getNotasMaterias0a3,
   getNotasMaterias4a7,
   getNotasMaterias7a10,
+  getDashboardStats,
+  getRanking,
+  crearNotaExamen,
+  editarNotaExamen,
+  eliminarNotaExamen,
+  crearNotaMateria,
+  editarNotaMateria,
+  getAlumnosBajaPerformance,
 } = require("./controller/peticionesAlumno");
 
 const server = express();
@@ -46,16 +59,36 @@ server.use((req, res, next) => {
 server.get("/alumnos/buscar", buscarAlumno);
 server.post("/alumnos/ingresar", ingresarAlumno);
 server.put("/alumnos/editar/:id", editarAlumno);
+server.delete("/alumnos/:id", eliminarAlumno);
+server.get("/alumnos/:id", obtenerAlumnoCompleto);
 
 /* ===========================
-         RUTAS PROFESORES
+       RUTAS PROFESORES
    =========================== */
 
+server.get("/profesores", listarProfesores);
+server.get("/profesores/:id", obtenerProfesor);
 server.post("/profesores/ingresar", ingresarProfesor);
 server.put("/profesores/editar/:id", editarProfesor);
+server.delete("/profesores/:id", eliminarProfesor);
 
 /* ===========================
-      NUEVAS RUTAS USUARIO
+     RUTAS NOTAS EXÁMENES
+   =========================== */
+
+server.post("/notas-examenes", crearNotaExamen);
+server.put("/notas-examenes/:id", editarNotaExamen);
+server.delete("/notas-examenes/:id", eliminarNotaExamen);
+
+/* ===========================
+     RUTAS NOTAS MATERIAS
+   =========================== */
+
+server.post("/notas-materias", crearNotaMateria);
+server.put("/notas-materias/:id", editarNotaMateria);
+
+/* ===========================
+       RUTAS USUARIO
    =========================== */
 
 // Conejos
@@ -75,7 +108,15 @@ server.get("/carreras/:idCarrera/alumnos", listarAlumnosPorCarrera);
 server.get("/carreras", listarCarreras);
 
 /* ===========================
-      NUEVAS RUTAS EASY MODE
+       RUTAS ANALYTICS
+   =========================== */
+
+server.get("/dashboard/stats", getDashboardStats);
+server.get("/ranking", getRanking);
+server.get("/alumnos-baja-performance", getAlumnosBajaPerformance);
+
+/* ===========================
+      RUTAS EASY MODE
    =========================== */
 
 server.get("/notas-examenes/0-3", getNotasExamenes0a3);

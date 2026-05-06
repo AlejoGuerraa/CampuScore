@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import CardUniv from "../components/CardUniv";
-import Busqueda from "../components/Busqueda";
-import AlumnosTable from "../components/AlumnosTable";
+import CardUniv from "../components/cardUniv";
+import Busqueda from "../components/busqueda";
+import AlumnosTable from "../components/alumnosTable";
 
 import "../pagescss/principal.css";
 

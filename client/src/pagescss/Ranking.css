@@ -1,0 +1,206 @@
+.ranking-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.ranking-title {
+  text-align: center;
+  font-size: 32px;
+  color: #1a1a1a;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+.ranking-filtros {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.filtro-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.filtro-group select {
+  padding: 8px 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filtro-group select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.btn-reset {
+  background: #667eea;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-reset:hover {
+  background: #764ba2;
+}
+
+.ranking-table-wrap {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ranking-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.ranking-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.pos-col {
+  width: 60px;
+  text-align: center;
+}
+
+.nom-col {
+  flex: 1;
+}
+
+.dni-col {
+  width: 120px;
+}
+
+.prom-col {
+  width: 100px;
+  text-align: center;
+}
+
+.mat-col {
+  width: 100px;
+  text-align: center;
+}
+
+.ranking-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.rank-row {
+  transition: background-color 0.2s;
+}
+
+.rank-row:hover {
+  background-color: #f9f9f9;
+}
+
+.rank-1 {
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.rank-2 {
+  background: rgba(192, 192, 192, 0.05);
+}
+
+.rank-3 {
+  background: rgba(205, 127, 50, 0.05);
+}
+
+.medal-cell {
+  font-size: 18px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.promedio-cell {
+  font-weight: 700;
+  color: #667eea;
+  text-align: center;
+}
+
+.materias-cell {
+  text-align: center;
+  color: #666;
+}
+
+.loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  background: #fee;
+  color: #c33;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #c33;
+  margin-bottom: 20px;
+}
+
+.no-data {
+  background: white;
+  text-align: center;
+  padding: 40px;
+  border-radius: 10px;
+  color: #999;
+  font-style: italic;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .ranking-filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtro-group {
+    min-width: auto;
+  }
+
+  .ranking-table {
+    font-size: 13px;
+  }
+
+  .ranking-table th,
+  .ranking-table td {
+    padding: 8px;
+  }
+
+  .nom-col {
+    min-width: 150px;
+  }
+}

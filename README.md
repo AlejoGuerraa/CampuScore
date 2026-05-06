@@ -5,22 +5,44 @@
 
 ## Descripción
 
-CampuScore es una aplicación web completa para la gestión integral de estudiantes, materias y calificaciones en universidades. El sistema permite registrar el desempeño académico de los alumnos a través de parciales y exámenes finales, con un sistema automático de recompensas en forma de "conejos virtuales" que incentiva el buen desempeño académico.
+CampuScore es un proyecto escolar en desarrollo que explora la gestión de estudiantes, materias y calificaciones en un entorno universitario.
 
-**Característica única:** Por cada calificación que recibe un estudiante, el sistema le otorga un conejo como recompensa. La edad del conejo está inversamente relacionada con la calificación: mejores notas reciben conejos más jóvenes, reflejando la responsabilidad del estudiante.
+
+###  Características Principales
+
+-  **Dashboard completo** con estadísticas y métricas
+-  **Sistema de ranking** de alumnos con filtros avanzados
+-  **Gestor de notas** para exámenes y materias
+-  **CRUD de profesores** integrado
+-  **Gestión de alumnos** con formularios validados
+-  **Alertas automáticas** para alumnos en riesgo
+-  **Sistema de badges/logros** para motivación
+-  **Gamificación con conejos virtuales** según desempeño
+
+### Sistema de recompensas
+
+Cada calificación otorga un "conejo virtual" con características dinámicas:
+
+* **Mejores notas** → conejos más jóvenes
+* **Peores notas** → conejos más viejos
+* **Badges especiales** → Motivación y reconocimiento
 
 ## Tecnologías
 
 ### Frontend
-- **React** - Interfaz de usuario interactiva
-- **Vite** - Build tool y dev server
-- **CSS** - Estilos personalizados
+- **React 19** - Interfaz de usuario interactiva
+- **Vite 7** - Build tool y dev server
+- **Axios 1.13** - Cliente HTTP
+- **React Router 7** - Enrutamiento
+- **Lucide React** - Iconos vectoriales
+- **CSS3** - Estilos con gradientes y animaciones
 
 ### Backend
-- **Node.js** - Runtime de JavaScript
-- **Express** - Framework web
-- **Sequelize** - ORM para base de datos
-- **MySQL** - Base de datos relacional
+- **Node.js 14+** - Runtime de JavaScript
+- **Express 5** - Framework web
+- **Sequelize 6** - ORM para base de datos
+- **MySQL 3** - Base de datos relacional
+- **JWT & Bcrypt** - Seguridad (dependencias incluidas)
 
 ## Instalación
 
@@ -34,7 +56,7 @@ CampuScore es una aplicación web completa para la gestión integral de estudian
 
 1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/tuusuario/CampuScore.git
+git clone https://github.com/AlejoGuerraa/CampuScore.git
 cd CampuScore
 ```
 

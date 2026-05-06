@@ -369,13 +369,304 @@ const getNotasMaterias7a10 = async (req, res) => {
   }
 };
 
+// =========================
+// NUEVAS FUNCIONES
+// =========================
+
+// DASHBOARD - Estadísticas generales
+const getDashboardStats = async (req, res) => {
+  try {
+    const totalAlumnos = await alumnos.count();
+    const totalFacultades = await facultades.count();
+    const totalCarreras = await carreras.count();
+    const totalMaterias = await materias.count();
+    const totalProfesores = await profesores.count();
+    
+    // Promedio de notas de exámenes
+    const allNotasEx = await notas_examenes.findAll({ attributes: ["nota"] });
+    const promExamenes = allNotasEx.length > 0 
+      ? (allNotasEx.reduce((sum, n) => sum + n.nota, 0) / allNotasEx.length).toFixed(2)
+      : 0;
+
+    // Top 5 alumnos por promedio
+    const top5 = await notas_materias.sequelize.query(`
+      SELECT 
+        nm.alumno_id,
+        a.nombre,
+        a.apellido,
+        a.dni,
+        ROUND(AVG(COALESCE(nm.promedio, 0)), 2) as promedio_general
+      FROM notas_materias nm
+      JOIN alumnos a ON nm.alumno_id = a.id
+      GROUP BY nm.alumno_id, a.id, a.nombre, a.apellido, a.dni
+      ORDER BY promedio_general DESC
+      LIMIT 5
+    `, { type: require("sequelize").QueryTypes.SELECT });
+
+    // Distribución por facultad
+    const distFacultad = await alumnos.sequelize.query(`
+      SELECT f.nombre, COUNT(a.id) as cantidad
+      FROM alumnos a
+      LEFT JOIN facultades f ON a.id_facultad = f.id
+      GROUP BY a.id_facultad, f.nombre
+    `, { type: require("sequelize").QueryTypes.SELECT });
+
+    res.json({
+      totalAlumnos,
+      totalFacultades,
+      totalCarreras,
+      totalMaterias,
+      totalProfesores,
+      promExamenes,
+      top5,
+      distFacultad
+    });
+  } catch (err) {
+    console.error("getDashboardStats error:", err);
+    res.status(500).json({ error: "Error obteniendo estadísticas" });
+  }
+};
+
+// RANKING - Alumnos ordenados por promedio
+const getRanking = async (req, res) => {
+  try {
+    const { idCarrera, idFacultad, limit = 50 } = req.query;
+
+    let query = `
+      SELECT 
+        a.id,
+        a.nombre,
+        a.apellido,
+        a.dni,
+        a.id_carrera,
+        a.id_facultad,
+        ROUND(AVG(COALESCE(nm.promedio, 0)), 2) as promedio_general,
+        COUNT(DISTINCT nm.materia_id) as materias_cursadas
+      FROM alumnos a
+      LEFT JOIN notas_materias nm ON a.id = nm.alumno_id
+    `;
+
+    let where = "WHERE 1=1";
+    if (idCarrera) where += ` AND a.id_carrera = ${parseInt(idCarrera)}`;
+    if (idFacultad) where += ` AND a.id_facultad = ${parseInt(idFacultad)}`;
+
+    query += where;
+    query += ` GROUP BY a.id, a.nombre, a.apellido, a.dni, a.id_carrera, a.id_facultad
+      ORDER BY promedio_general DESC
+      LIMIT ${parseInt(limit)}`;
+
+    const ranking = await notas_materias.sequelize.query(query, { 
+      type: require("sequelize").QueryTypes.SELECT 
+    });
+
+    res.json(ranking);
+  } catch (err) {
+    console.error("getRanking error:", err);
+    res.status(500).json({ error: "Error obteniendo ranking" });
+  }
+};
+
+// Listar todos los profesores
+const listarProfesores = async (req, res) => {
+  try {
+    const lista = await profesores.findAll({
+      order: [["apellido", "ASC"]]
+    });
+    res.json(lista);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error listando profesores" });
+  }
+};
+
+// Obtener profesor por ID
+const obtenerProfesor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const prof = await profesores.findByPk(id);
+    if (!prof) return res.status(404).json({ error: "Profesor no encontrado" });
+    res.json(prof);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo profesor" });
+  }
+};
+
+// Eliminar alumno
+const eliminarAlumno = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const alumno = await alumnos.findByPk(id);
+    if (!alumno) return res.status(404).json({ error: "Alumno no encontrado" });
+
+    // Eliminar relaciones antes
+    await alumnos_conejos.destroy({ where: { alumno_id: id } });
+    await notas_examenes.destroy({ where: { id_alumno: id } });
+    await notas_materias.destroy({ where: { alumno_id: id } });
+
+    await alumno.destroy();
+    res.json({ message: "Alumno eliminado correctamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Error eliminando alumno" });
+  }
+};
+
+// Eliminar profesor
+const eliminarProfesor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const prof = await profesores.findByPk(id);
+    if (!prof) return res.status(404).json({ error: "Profesor no encontrado" });
+
+    await prof.destroy();
+    res.json({ message: "Profesor eliminado correctamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Error eliminando profesor" });
+  }
+};
+
+// Crear nota de examen
+const crearNotaExamen = async (req, res) => {
+  try {
+    const { id_alumno, id_materia, nota, tipo, acompatrimonio } = req.body;
+    
+    const nuevaNota = await notas_examenes.create({
+      id_alumno,
+      id_materia,
+      nota,
+      tipo: tipo || "parcial",
+      acompatrimonio: acompatrimonio || false
+    });
+
+    res.status(201).json({ message: "Nota de examen creada", data: nuevaNota });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Error creando nota de examen" });
+  }
+};
+
+// Editar nota de examen
+const editarNotaExamen = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const nota = await notas_examenes.findByPk(id);
+    if (!nota) return res.status(404).json({ error: "Nota no encontrada" });
+
+    await nota.update(req.body);
+    res.json({ message: "Nota actualizada", data: nota });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Error actualizando nota" });
+  }
+};
+
+// Eliminar nota de examen
+const eliminarNotaExamen = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const nota = await notas_examenes.findByPk(id);
+    if (!nota) return res.status(404).json({ error: "Nota no encontrada" });
+
+    await nota.destroy();
+    res.json({ message: "Nota eliminada" });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Error eliminando nota" });
+  }
+};
+
+// Crear nota de materia
+const crearNotaMateria = async (req, res) => {
+  try {
+    const nuevaNota = await notas_materias.create(req.body);
+    res.status(201).json({ message: "Nota de materia creada", data: nuevaNota });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Error creando nota de materia" });
+  }
+};
+
+// Editar nota de materia
+const editarNotaMateria = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const nota = await notas_materias.findByPk(id);
+    if (!nota) return res.status(404).json({ error: "Nota no encontrada" });
+
+    await nota.update(req.body);
+    res.json({ message: "Nota actualizada", data: nota });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Error actualizando nota" });
+  }
+};
+
+// Alumnos con baja performance (promedio < 5)
+const getAlumnosBajaPerformance = async (req, res) => {
+  try {
+    const bajos = await notas_materias.sequelize.query(`
+      SELECT 
+        a.id,
+        a.nombre,
+        a.apellido,
+        a.dni,
+        c.nombre as carrera,
+        f.nombre as facultad,
+        ROUND(AVG(COALESCE(nm.promedio, 0)), 2) as promedio_general
+      FROM alumnos a
+      LEFT JOIN notas_materias nm ON a.id = nm.alumno_id
+      LEFT JOIN carreras c ON a.id_carrera = c.id
+      LEFT JOIN facultades f ON a.id_facultad = f.id
+      GROUP BY a.id, a.nombre, a.apellido, a.dni, c.nombre, f.nombre
+      HAVING promedio_general < 5
+      ORDER BY promedio_general ASC
+    `, { type: require("sequelize").QueryTypes.SELECT });
+
+    res.json(bajos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo alumnos de baja performance" });
+  }
+};
+
+// Obtener alumno con TODOS sus datos (completo)
+const obtenerAlumnoCompleto = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const alumno = await alumnos.findByPk(id, {
+      include: [
+        { model: carreras, as: "carrera", attributes: ["id", "nombre"] },
+        { model: facultades, as: "facultad", attributes: ["id", "nombre"] },
+        { model: notas_examenes, as: "notas_examenes", include: [{ model: materias, as: "materia" }] },
+        { model: notas_materias, as: "notas_materias", include: [{ model: materias, as: "materia" }] },
+        { model: alumnos_conejos, as: "alumnos_conejos", include: [{ model: conejos, as: "conejo" }] }
+      ]
+    });
+
+    if (!alumno) return res.status(404).json({ error: "Alumno no encontrado" });
+
+    res.json(alumno);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo alumno completo" });
+  }
+};
+
 
 module.exports = {
   buscarAlumno,
   ingresarAlumno,
   editarAlumno,
+  eliminarAlumno,
+  obtenerAlumnoCompleto,
   ingresarProfesor,
   editarProfesor,
+  listarProfesores,
+  obtenerProfesor,
+  eliminarProfesor,
   listarMateriasPorCarrera,
   getConejosByAlumno,
   getNotasExamenesByAlumno,
@@ -388,4 +679,12 @@ module.exports = {
   getNotasMaterias0a3,
   getNotasMaterias4a7,
   getNotasMaterias7a10,
+  getDashboardStats,
+  getRanking,
+  crearNotaExamen,
+  editarNotaExamen,
+  eliminarNotaExamen,
+  crearNotaMateria,
+  editarNotaMateria,
+  getAlumnosBajaPerformance,
 };
