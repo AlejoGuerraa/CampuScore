@@ -1,4 +1,7 @@
-# CampuScore
+<p align="center">
+  <img src="misc/Banner.PNG" width="100%">
+</p>
+<br>
 
 ## Descripción
 
