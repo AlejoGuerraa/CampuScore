@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { apiGet } from "../lib/api";
 import "../pagescss/AlertasPerformance.css";
 
-const API_BASE = "http://localhost:3000";
 
 export default function AlertasPerformance() {
   const [alumnos, setAlumnos] = useState([]);
@@ -16,8 +15,8 @@ export default function AlertasPerformance() {
   const fetchAlumnosBajaPerformance = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/alumnos-baja-performance`);
-      setAlumnos(res.data || []);
+      const res = await apiGet('/alumnos-baja-performance');
+      setAlumnos(res || []);
       setError(null);
     } catch (err) {
       console.error("Error fetching alumnos:", err);

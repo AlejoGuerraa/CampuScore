@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import brainImg from "../assets/cerebro.jpg"; // <-- asegurate que exista
-
-const API_BASE = "http://localhost:3000";
+import { apiGet } from "../lib/api";
 const DEFAULT_LIMIT = 100;
 
 function formatDate(dt) {
@@ -38,15 +37,12 @@ export default function BrainHunter() {
       try {
         // Endpoints para notas altas (7–10)
         const [resEx, resMat] = await Promise.all([
-          fetch(`${API_BASE}/notas-examenes/7-10?limit=${DEFAULT_LIMIT}`),
-          fetch(`${API_BASE}/notas-materias/7-10?limit=${DEFAULT_LIMIT}`),
+          apiGet('/notas-examenes/7-10'),
+          apiGet('/notas-materias/7-10')
         ]);
 
-        if (!resEx.ok) throw new Error("Error cargando notas de exámenes");
-        if (!resMat.ok) throw new Error("Error cargando notas por materia");
-
-        const exData = normalizeArray(await resEx.json()).slice(0, DEFAULT_LIMIT);
-        const matData = normalizeArray(await resMat.json()).slice(0, DEFAULT_LIMIT);
+        const exData = normalizeArray(resEx).slice(0, DEFAULT_LIMIT);
+        const matData = normalizeArray(resMat).slice(0, DEFAULT_LIMIT);
 
         setExamenes(exData);
         setMaterias(matData);

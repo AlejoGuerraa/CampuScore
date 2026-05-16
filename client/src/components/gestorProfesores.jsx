@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { apiGet, apiPost, apiPut, apiDelete } from "../lib/api";
 import "../pagescss/GestorProfesores.css";
-
-const API_BASE = "http://localhost:3000";
 
 export default function GestorProfesores() {
   const [profesores, setProfesores] = useState([]);
@@ -23,8 +21,8 @@ export default function GestorProfesores() {
   const fetchProfesores = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/profesores`);
-      setProfesores(res.data || []);
+      const res = await apiGet('/profesores');
+      setProfesores(res || []);
       setError(null);
     } catch (err) {
       console.error("Error fetching profesores:", err);
@@ -47,9 +45,9 @@ export default function GestorProfesores() {
 
     try {
       if (editingId) {
-        await axios.put(`${API_BASE}/profesores/editar/${editingId}`, formData);
+        await apiPut(`/profesores/editar/${editingId}`, formData);
       } else {
-        await axios.post(`${API_BASE}/profesores/ingresar`, formData);
+        await apiPost(`/profesores/ingresar`, formData);
       }
 
       setFormData({ nombre: "", apellido: "", especialidad: "" });
@@ -75,7 +73,7 @@ export default function GestorProfesores() {
   const handleDelete = async (id) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este profesor?")) {
       try {
-        await axios.delete(`${API_BASE}/profesores/${id}`);
+        await apiDelete(`/profesores/${id}`);
         fetchProfesores();
       } catch (err) {
         setError("Error eliminando profesor");

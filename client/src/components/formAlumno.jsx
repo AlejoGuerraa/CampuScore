@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { apiGet, apiPost, apiPut } from "../lib/api";
 import "../pagescss/FormAlumno.css";
-
-const API_BASE = "http://localhost:3000";
 
 export default function FormAlumno({ alumnoId = null, onSuccess = null }) {
   const [formData, setFormData] = useState({
@@ -27,13 +25,13 @@ export default function FormAlumno({ alumnoId = null, onSuccess = null }) {
   useEffect(() => {
     async function loadData() {
       try {
-        const [carrerasRes, facultadesRes] = await Promise.all([
-          axios.get(`${API_BASE}/carreras`),
-          axios.get(`${API_BASE}/facultades`),
-        ]);
+          const [carrerasRes, facultadesRes] = await Promise.all([
+            apiGet('/carreras'),
+            apiGet('/facultades'),
+          ]);
 
-        setCarreras(carrerasRes.data || []);
-        setFacultades(facultadesRes.data || []);
+          setCarreras(carrerasRes || []);
+          setFacultades(facultadesRes || []);
       } catch (err) {
         console.error("Error cargando datos:", err);
         setError("Error cargando facultades y carreras");
@@ -50,8 +48,7 @@ export default function FormAlumno({ alumnoId = null, onSuccess = null }) {
 
   const loadAlumno = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/alumnos/${alumnoId}`);
-      const alumno = res.data;
+      const alumno = await apiGet(`/alumnos/${alumnoId}`);
       setFormData({
         nombre: alumno.nombre || "",
         apellido: alumno.apellido || "",
@@ -86,11 +83,11 @@ export default function FormAlumno({ alumnoId = null, onSuccess = null }) {
     try {
       if (alumnoId) {
         // Editar
-        await axios.put(`${API_BASE}/alumnos/editar/${alumnoId}`, formData);
+        await apiPut(`/alumnos/editar/${alumnoId}`, formData);
         setSuccess(true);
       } else {
         // Crear
-        await axios.post(`${API_BASE}/alumnos/ingresar`, formData);
+        await apiPost(`/alumnos/ingresar`, formData);
         setSuccess(true);
         setFormData({
           nombre: "",

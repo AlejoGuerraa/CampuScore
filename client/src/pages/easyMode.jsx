@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import easyImg from "../assets/easy.png"; // <-- asegurate que exista
-
-const API_BASE = "http://localhost:3000";
+import { apiGet } from "../lib/api";
 const DEFAULT_LIMIT = 100;
 
 function formatDate(dt) {
@@ -38,16 +37,10 @@ export default function EasyMode() {
       try {
         // Rutas fijas creadas en backend: /notas-examenes/0-3 y /notas-materias/0-3
         // Incluimos ?limit=100 por si el backend soporta paginación; además cortamos cliente-side.
-        const [resEx, resMat] = await Promise.all([
-          fetch(`${API_BASE}/notas-examenes/0-3?limit=${DEFAULT_LIMIT}`),
-          fetch(`${API_BASE}/notas-materias/0-3?limit=${DEFAULT_LIMIT}`),
+        const [exDataRaw, matDataRaw] = await Promise.all([
+          apiGet('/notas-examenes/0-3'),
+          apiGet('/notas-materias/0-3')
         ]);
-
-        if (!resEx.ok) throw new Error("Error cargando notas de exámenes (backend)");
-        if (!resMat.ok) throw new Error("Error cargando notas por materia (backend)");
-
-        const exDataRaw = await resEx.json();
-        const matDataRaw = await resMat.json();
 
         const exData = normalizeArray(exDataRaw).slice(0, DEFAULT_LIMIT);
         const matData = normalizeArray(matDataRaw).slice(0, DEFAULT_LIMIT);

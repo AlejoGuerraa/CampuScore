@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { apiGet } from "../lib/api";
 import "../pagescss/Badges.css";
 
-const API_BASE = "http://localhost:3000";
 
 // Definir badges disponibles
 const BADGES_CONFIG = {
@@ -57,8 +56,8 @@ export default function Badges() {
   const fetchAlumnos = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/alumnos/buscar?limit=1000`);
-      const list = res.data?.results || res.data || [];
+      const res = await apiGet('/alumnos/buscar?limit=1000');
+      const list = res?.results || res || [];
       setAlumnos(list);
 
       // Calcular badges para cada alumno

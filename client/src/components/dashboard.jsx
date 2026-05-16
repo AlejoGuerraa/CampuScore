@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { apiGet } from "../lib/api";
 import "../pagescss/Dashboard.css";
 
-const API_BASE = "http://localhost:3000";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -16,8 +15,8 @@ export default function Dashboard() {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE}/dashboard/stats`);
-      setStats(res.data);
+      const res = await apiGet('/dashboard/stats');
+      setStats(res);
       setError(null);
     } catch (err) {
       console.error("Error fetching stats:", err);

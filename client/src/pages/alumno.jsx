@@ -3,8 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import "../pagescss/Alumno.css";
-
-const API_BASE = "http://localhost:3000";
+import { apiGet } from "../lib/api";
 
 function safeIncluded(obj, candidates = []) {
   // devuelve la primera propiedad incluida disponible (o null)
@@ -38,10 +37,9 @@ export default function AlumnoPage() {
       setError(null);
       try {
         // Intento directo (posible que no lo tengas implementado)
-        const resDirect = await fetch(`${API_BASE}/alumno/${id}`);
-        if (resDirect.ok) {
-          const data = await resDirect.json();
-          setAlumno(data);
+        const dataDirect = await apiGet(`/alumno/${id}`);
+        if (dataDirect) {
+          setAlumno(dataDirect);
           setLoadingAlumno(false);
           return;
         }
@@ -50,9 +48,7 @@ export default function AlumnoPage() {
         let offset = 0;
         const LIMIT = 200;
         while (!found) {
-          const res = await fetch(`${API_BASE}/alumnos/buscar?limit=${LIMIT}&offset=${offset}`);
-          if (!res.ok) break;
-          const payload = await res.json();
+          const payload = await apiGet(`/alumnos/buscar?limit=${LIMIT}&offset=${offset}`);
           const arr = payload.results || payload;
           if (!arr || arr.length === 0) break;
           found = arr.find((a) => Number(a.id) === Number(id));
@@ -87,13 +83,7 @@ export default function AlumnoPage() {
     async function loadConejos() {
       setLoadingConejos(true);
       try {
-        const res = await fetch(`${API_BASE}/alumno/${id}/conejos`);
-        if (!res.ok) {
-          setConejos([]);
-          setLoadingConejos(false);
-          return;
-        }
-        const data = await res.json();
+        const data = await apiGet(`/alumno/${id}/conejos`);
         // data likely array of alumnos_conejos with included conejo object
         setConejos(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -111,13 +101,7 @@ export default function AlumnoPage() {
     async function loadNotasEx() {
       setLoadingNotasEx(true);
       try {
-        const res = await fetch(`${API_BASE}/alumno/${id}/notas-examenes`);
-        if (!res.ok) {
-          setNotasExamenes([]);
-          setLoadingNotasEx(false);
-          return;
-        }
-        const data = await res.json();
+        const data = await apiGet(`/alumno/${id}/notas-examenes`);
         setNotasExamenes(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("loadNotasEx:", err);
@@ -134,13 +118,7 @@ export default function AlumnoPage() {
     async function loadNotasMat() {
       setLoadingNotasMat(true);
       try {
-        const res = await fetch(`${API_BASE}/alumno/${id}/notas-materias`);
-        if (!res.ok) {
-          setNotasMaterias([]);
-          setLoadingNotasMat(false);
-          return;
-        }
-        const data = await res.json();
+        const data = await apiGet(`/alumno/${id}/notas-materias`);
         setNotasMaterias(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("loadNotasMat:", err);

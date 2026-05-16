@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import logoUNSAM from "../assets/logoUNSAM.png";
-
-const API_BASE = "http://localhost:3000";
+import { apiGet } from "../lib/api";
 const ALUMNOS_LIMIT = 100; // límite solicitado
 
 export default function UnsamPage() {
@@ -21,9 +20,7 @@ export default function UnsamPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const resCarreras = await fetch(`${API_BASE}/carreras`);
-        if (!resCarreras.ok) throw new Error("Error cargando carreras");
-        const allCarreras = await resCarreras.json();
+        const allCarreras = await apiGet('/carreras');
 
         // mostrar sólo carreras con id 3 y 4 y id_facultad = 3
         const carrerasUNSAM = allCarreras.filter(
@@ -37,15 +34,11 @@ export default function UnsamPage() {
 
         for (const c of carrerasUNSAM) {
           // Materias
-          const resMat = await fetch(`${API_BASE}/carreras/${c.id}/materias`);
-          materiasData[c.id] = resMat.ok ? await resMat.json() : [];
+          const resMat = await apiGet(`/carreras/${c.id}/materias`);
+          materiasData[c.id] = resMat || [];
 
           // Alumnos con límite 100
-          const resAlum = await fetch(
-            `${API_BASE}/carreras/${c.id}/alumnos?limit=${ALUMNOS_LIMIT}`
-          );
-          // asumimos el endpoint devuelve array (o { results: [...] })
-          const payload = resAlum.ok ? await resAlum.json() : [];
+          const payload = await apiGet(`/carreras/${c.id}/alumnos?limit=${ALUMNOS_LIMIT}`);
           alumnosData[c.id] = Array.isArray(payload)
             ? payload.slice(0, ALUMNOS_LIMIT)
             : (payload.results || []).slice(0, ALUMNOS_LIMIT);

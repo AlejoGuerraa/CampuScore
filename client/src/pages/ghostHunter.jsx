@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import ghostImg from "../assets/ghost.png"; // <-- asegurate que exista
-
-const API_BASE = "http://localhost:3000";
 const DEFAULT_LIMIT = 100;
 
 function formatDate(dt) {
@@ -37,15 +35,11 @@ export default function GhostHunter() {
       setError(null);
       try {
         const [resEx, resMat] = await Promise.all([
-          fetch(`${API_BASE}/notas-examenes/4-7?limit=${DEFAULT_LIMIT}`),
-          fetch(`${API_BASE}/notas-materias/4-7?limit=${DEFAULT_LIMIT}`),
+          (await import("../lib/api")).then(m => m.apiGet(`/notas-examenes/4-7`)),
+          (await import("../lib/api")).then(m => m.apiGet(`/notas-materias/4-7`)),
         ]);
-
-        if (!resEx.ok) throw new Error("Error cargando notas de exámenes");
-        if (!resMat.ok) throw new Error("Error cargando notas por materia");
-
-        const exData = normalizeArray(await resEx.json()).slice(0, DEFAULT_LIMIT);
-        const matData = normalizeArray(await resMat.json()).slice(0, DEFAULT_LIMIT);
+        const exData = normalizeArray(resEx).slice(0, DEFAULT_LIMIT);
+        const matData = normalizeArray(resMat).slice(0, DEFAULT_LIMIT);
 
         setExamenes(exData);
         setMaterias(matData);

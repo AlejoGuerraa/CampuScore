@@ -1,0 +1,49 @@
+{
+  "carreras": [
+    {"id": 1, "nombre": "Ingeniería en Sistemas", "facultad_id": 1},
+    {"id": 2, "nombre": "Lic. en Matemáticas", "facultad_id": 2}
+  ],
+  "facultades": [
+    {"id": 1, "nombre": "Facultad de Ingeniería"},
+    {"id": 2, "nombre": "Facultad de Ciencias"}
+  ],
+  "materias": [
+    {"id": 1, "nombre": "Algoritmos", "carrera_id": 1},
+    {"id": 2, "nombre": "Matemática Discreta", "carrera_id": 1},
+    {"id": 3, "nombre": "Cálculo I", "carrera_id": 2}
+  ],
+  "alumnos": [
+    {"id": 1, "nombre": "Juan", "apellido": "Pérez", "dni": "20123456", "carrera_id": 1},
+    {"id": 2, "nombre": "María", "apellido": "Gómez", "dni": "27123456", "carrera_id": 2},
+    {"id": 3, "nombre": "Luis", "apellido": "Martínez", "dni": "30123456", "carrera_id": 1},
+    {"id": 4, "nombre": "Ana", "apellido": "López", "dni": "31123456", "carrera_id": 1},
+    {"id": 5, "nombre": "Carlos", "apellido": "Ruiz", "dni": "32123456", "carrera_id": 2},
+    {"id": 6, "nombre": "Sofía", "apellido": "Fernández", "dni": "33123456", "carrera_id": 2},
+    {"id": 7, "nombre": "Diego", "apellido": "Vega", "dni": "34123456", "carrera_id": 1},
+    {"id": 8, "nombre": "Lucía", "apellido": "Ramos", "dni": "35123456", "carrera_id": 2}
+  ],
+  "notas_examenes": [
+    {"id": 1, "alumno_id": 1, "id_alumno": 1, "alumno": {"id":1,"nombre":"Juan","apellido":"Pérez","dni":"20123456"}, "materia_id": 1, "materia": {"id":1,"nombre":"Algoritmos"}, "nota": 5.5, "fecha": "2025-04-10", "tipo": "Parcial"},
+    {"id": 2, "alumno_id": 2, "id_alumno": 2, "alumno": {"id":2,"nombre":"María","apellido":"Gómez","dni":"27123456"}, "materia_id": 3, "materia": {"id":3,"nombre":"Cálculo I"}, "nota": 8.0, "fecha": "2025-03-22", "tipo": "Final"},
+    {"id": 3, "alumno_id": 3, "id_alumno": 3, "alumno": {"id":3,"nombre":"Luis","apellido":"Martínez","dni":"30123456"}, "materia_id": 1, "materia": {"id":1,"nombre":"Algoritmos"}, "nota": 7.0, "fecha": "2025-02-15", "tipo": "Parcial"},
+    {"id": 4, "alumno_id": 4, "id_alumno": 4, "alumno": {"id":4,"nombre":"Ana","apellido":"López","dni":"31123456"}, "materia_id": 2, "materia": {"id":2,"nombre":"Matemática Discreta"}, "nota": 6.5, "fecha": "2025-01-20", "tipo": "Final"},
+    {"id": 5, "alumno_id": 5, "id_alumno": 5, "alumno": {"id":5,"nombre":"Carlos","apellido":"Ruiz","dni":"32123456"}, "materia_id": 3, "materia": {"id":3,"nombre":"Cálculo I"}, "nota": 4.0, "fecha": "2025-04-02", "tipo": "Parcial"},
+    {"id": 6, "alumno_id": 6, "id_alumno": 6, "alumno": {"id":6,"nombre":"Sofía","apellido":"Fernández","dni":"33123456"}, "materia_id": 3, "materia": {"id":3,"nombre":"Cálculo I"}, "nota": 9.0, "fecha": "2025-03-01", "tipo": "Final"},
+    {"id": 7, "alumno_id": 7, "id_alumno": 7, "alumno": {"id":7,"nombre":"Diego","apellido":"Vega","dni":"34123456"}, "materia_id": 2, "materia": {"id":2,"nombre":"Matemática Discreta"}, "nota": 2.5, "fecha": "2025-02-02", "tipo": "Parcial"},
+    {"id": 8, "alumno_id": 8, "id_alumno": 8, "alumno": {"id":8,"nombre":"Lucía","apellido":"Ramos","dni":"35123456"}, "materia_id": 1, "materia": {"id":1,"nombre":"Algoritmos"}, "nota": 8.5, "fecha": "2025-04-15", "tipo": "Final"}
+  ],
+  "notas_materias": [
+    {"id": 1, "alumno_id": 1, "alumno": {"id":1,"nombre":"Juan","apellido":"Pérez","dni":"20123456"}, "materia": {"id":1,"nombre":"Algoritmos"}, "estado": "aprobada", "promedio": 6.0, "promedio_sin_aplazo": 6.0},
+    {"id": 2, "alumno_id": 2, "alumno": {"id":2,"nombre":"María","apellido":"Gómez","dni":"27123456"}, "materia": {"id":3,"nombre":"Cálculo I"}, "estado": "promocionada", "promedio": 8.0, "promedio_sin_aplazo": 8.0},
+    {"id": 3, "alumno_id": 3, "alumno": {"id":3,"nombre":"Luis","apellido":"Martínez","dni":"30123456"}, "materia": {"id":1,"nombre":"Algoritmos"}, "estado": "aprobada", "promedio": 7.0, "promedio_sin_aplazo": 7.0},
+    {"id": 4, "alumno_id": 4, "alumno": {"id":4,"nombre":"Ana","apellido":"López","dni":"31123456"}, "materia": {"id":2,"nombre":"Matemática Discreta"}, "estado": "aprobada", "promedio": 6.5, "promedio_sin_aplazo": 6.5},
+    {"id": 5, "alumno_id": 5, "alumno": {"id":5,"nombre":"Carlos","apellido":"Ruiz","dni":"32123456"}, "materia": {"id":3,"nombre":"Cálculo I"}, "estado": "desaprobada", "promedio": 3.8, "promedio_sin_aplazo": 3.8},
+    {"id": 6, "alumno_id": 6, "alumno": {"id":6,"nombre":"Sofía","apellido":"Fernández","dni":"33123456"}, "materia": {"id":3,"nombre":"Cálculo I"}, "estado": "promocionada", "promedio": 9.0, "promedio_sin_aplazo": 9.0},
+    {"id": 7, "alumno_id": 7, "alumno": {"id":7,"nombre":"Diego","apellido":"Vega","dni":"34123456"}, "materia": {"id":2,"nombre":"Matemática Discreta"}, "estado": "desaprobada", "promedio": 2.5, "promedio_sin_aplazo": 2.5},
+    {"id": 8, "alumno_id": 8, "alumno": {"id":8,"nombre":"Lucía","apellido":"Ramos","dni":"35123456"}, "materia": {"id":1,"nombre":"Algoritmos"}, "estado": "promocionada", "promedio": 8.5, "promedio_sin_aplazo": 8.5}
+  ],
+  "conejos": [
+    {"id": 1, "alumno_id": 1, "nombre": "Conejito", "descripcion": "Mascota de prueba"}
+  ],
+  "dashboard": {"totalAlumnos": 2, "promedioGeneral": 6.5}
+}

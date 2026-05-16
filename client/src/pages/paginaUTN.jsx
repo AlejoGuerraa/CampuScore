@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import logoUTN from "../assets/logoUTN.jpg";
-
-const API_BASE = "http://localhost:3000";
+import { apiGet } from "../lib/api";
 const ALUMNOS_LIMIT = 100; // límite solicitado
 
 export default function PaginaUTN() {
@@ -21,9 +20,7 @@ export default function PaginaUTN() {
   useEffect(() => {
     async function loadData() {
       try {
-        const resCarreras = await fetch(`${API_BASE}/carreras`);
-        if (!resCarreras.ok) throw new Error("Error cargando carreras");
-        const allCarreras = await resCarreras.json();
+        const allCarreras = await apiGet('/carreras');
 
         // mostrar solo carreras de UTN: id_facultad = 1 y id = 1
         const carrerasUTN = allCarreras.filter(
@@ -36,13 +33,10 @@ export default function PaginaUTN() {
         const filtrosData = {};
 
         for (const c of carrerasUTN) {
-          const resMat = await fetch(`${API_BASE}/carreras/${c.id}/materias`);
-          materiasData[c.id] = resMat.ok ? await resMat.json() : [];
+          const resMat = await apiGet(`/carreras/${c.id}/materias`);
+          materiasData[c.id] = resMat || [];
 
-          const resAlum = await fetch(
-            `${API_BASE}/carreras/${c.id}/alumnos?limit=${ALUMNOS_LIMIT}`
-          );
-          const payload = resAlum.ok ? await resAlum.json() : [];
+          const payload = await apiGet(`/carreras/${c.id}/alumnos?limit=${ALUMNOS_LIMIT}`);
           alumnosData[c.id] = Array.isArray(payload)
             ? payload.slice(0, ALUMNOS_LIMIT)
             : (payload.results || []).slice(0, ALUMNOS_LIMIT);

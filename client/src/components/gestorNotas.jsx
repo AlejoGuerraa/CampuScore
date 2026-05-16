@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { apiGet, apiPost } from "../lib/api";
 import "../pagescss/GestorNotas.css";
-
-const API_BASE = "http://localhost:3000";
 
 export default function GestorNotas() {
   const [activeTab, setActiveTab] = useState("examenes");
@@ -26,13 +24,13 @@ export default function GestorNotas() {
   const fetchData = async () => {
     try {
       const [alumnosRes, materiasRes] = await Promise.all([
-        axios.get(`${API_BASE}/alumnos/buscar?limit=1000`),
-        axios.get(`${API_BASE}/carreras/1/materias`).catch(() => ({ data: [] })),
+        apiGet('/alumnos/buscar?limit=1000'),
+        apiGet('/carreras/1/materias').catch(() => []),
       ]);
 
-      const alumnosList = alumnosRes.data?.results || alumnosRes.data || [];
+      const alumnosList = alumnosRes?.results || alumnosRes || [];
       setAlumnos(alumnosList);
-      setMaterias(materiasRes.data || []);
+      setMaterias(materiasRes || []);
     } catch (err) {
       console.error("Error fetching data:", err);
       setError("Error cargando datos");
@@ -55,7 +53,7 @@ export default function GestorNotas() {
         ? "/notas-examenes" 
         : "/notas-materias";
 
-      await axios.post(`${API_BASE}${endpoint}`, formData);
+      await apiPost(`${endpoint}`, formData);
 
       setFormData({
         id_alumno: "",

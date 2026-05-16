@@ -16,7 +16,7 @@
                     {/* 1. SECCIÓN CONTACTO (IZQUIERDA) */}
                     <div className="footer-section contact"> 
                         <h4>Contacto</h4>
-                        <p>Email: <a href="mailto:nextRead@gmail.com">sistemaUniv@gmail.com</a></p>
+                        <p>Email: <a href="mailto:nextRead@gmail.com">guerra.alejoet36@gmail.com</a></p>
                         <p>Teléfono: +54 9 11 3432 1238</p>
                         
                     </div>

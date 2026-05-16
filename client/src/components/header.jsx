@@ -14,7 +14,7 @@ export default function Header() {
       <div className="header-left" onClick={() => navigate("/")}>
         {/* LOGO CIRCULAR */}
         <img src={logo} alt="Logo" className="header-logo" />
-        <span className="app-title">Sistema Facultades</span>
+        <span className="app-title">Campuscore</span>
       </div>
 
       <nav className="header-nav">

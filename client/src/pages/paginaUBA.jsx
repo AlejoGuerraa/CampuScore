@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import logoUBA from "../assets/logoUBA.jpg";
-
-const API_BASE = "http://localhost:3000";
+import { apiGet } from "../lib/api";
 const ALUMNOS_LIMIT = 100;
 
 export default function PaginaUBA() {
@@ -21,9 +20,7 @@ export default function PaginaUBA() {
   useEffect(() => {
     async function loadData() {
       try {
-        const resCarreras = await fetch(`${API_BASE}/carreras`);
-        if (!resCarreras.ok) throw new Error("Error cargando carreras");
-        const allCarreras = await resCarreras.json();
+        const allCarreras = await apiGet('/carreras');
 
         // Solo carreras de UBA: id_facultad = 2 y id = 2
         const carrerasUBA = allCarreras.filter(
@@ -36,13 +33,10 @@ export default function PaginaUBA() {
         const filtrosData = {};
 
         for (const c of carrerasUBA) {
-          const resMat = await fetch(`${API_BASE}/carreras/${c.id}/materias`);
-          materiasData[c.id] = resMat.ok ? await resMat.json() : [];
+          const resMat = await apiGet(`/carreras/${c.id}/materias`);
+          materiasData[c.id] = resMat || [];
 
-          const resAlum = await fetch(
-            `${API_BASE}/carreras/${c.id}/alumnos?limit=${ALUMNOS_LIMIT}`
-          );
-          const payload = resAlum.ok ? await resAlum.json() : [];
+          const payload = await apiGet(`/carreras/${c.id}/alumnos?limit=${ALUMNOS_LIMIT}`);
           alumnosData[c.id] = Array.isArray(payload)
             ? payload.slice(0, ALUMNOS_LIMIT)
             : (payload.results || []).slice(0, ALUMNOS_LIMIT);

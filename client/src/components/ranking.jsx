@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { apiGet } from "../lib/api";
 import "../pagescss/Ranking.css";
-
-const API_BASE = "http://localhost:3000";
 
 export default function Ranking() {
   const [ranking, setRanking] = useState([]);
@@ -29,12 +27,12 @@ export default function Ranking() {
   const fetchData = async () => {
     try {
       const [carrerasRes, facultadesRes] = await Promise.all([
-        axios.get(`${API_BASE}/carreras`),
-        axios.get(`${API_BASE}/facultades`),
+        apiGet('/carreras'),
+        apiGet('/facultades'),
       ]);
 
-      setCarreras(carrerasRes.data || []);
-      setFacultades(facultadesRes.data || []);
+      setCarreras(carrerasRes || []);
+      setFacultades(facultadesRes || []);
     } catch (err) {
       console.error("Error fetching metadata:", err);
     }
@@ -49,8 +47,8 @@ export default function Ranking() {
       if (filtros.idFacultad) params.append("idFacultad", filtros.idFacultad);
       params.append("limit", filtros.limit);
 
-      const res = await axios.get(`${API_BASE}/ranking?${params.toString()}`);
-      setRanking(res.data || []);
+      const res = await apiGet(`/ranking?${params.toString()}`);
+      setRanking(res || []);
       setError(null);
     } catch (err) {
       console.error("Error fetching ranking:", err);
