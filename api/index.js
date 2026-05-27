@@ -43,7 +43,22 @@ server.use(express.json());
 
 // CORS
 server.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:4173",
+    "http://localhost:4174",
+    "http://localhost:3000",
+    /campuscore.*\.vercel\.app$/,
+  ];
+  const isAllowed = allowedOrigins.some((allowed) =>
+    typeof allowed === "string" ? allowed === origin : allowed.test(origin)
+  );
+  if (isAllowed || !origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin || "*");
+  }
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS"
@@ -90,6 +105,9 @@ server.put("/notas-materias/:id", editarNotaMateria);
 /* ===========================
        RUTAS USUARIO
    =========================== */
+
+// Obtener alumno por ID (simple)
+server.get("/alumno/:id", obtenerAlumnoCompleto);
 
 // Conejos
 server.get("/alumno/:id/conejos", getConejosByAlumno);

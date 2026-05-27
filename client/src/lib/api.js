@@ -73,9 +73,18 @@ export async function apiGet(path) {
       const parts = pathname.split('/').filter(Boolean);
       const id = Number(parts[1]);
       if (parts.length === 2) {
-        return (data.alumnos || []).find(a => a.id === id) || null;
+        // Return complete alumno with all relations
+        const alumno = (data.alumnos || []).find(a => a.id === id);
+        if (!alumno) return null;
+        // Add related data
+        return {
+          ...alumno,
+          notas_examenes: (data.notas_examenes || []).filter(n => n.alumno_id === id),
+          notas_materias: (data.notas_materias || []).filter(n => n.alumno_id === id),
+          alumnos_conejos: (data.alumnos_conejos || []).filter(ac => ac.alumno_id === id)
+        };
       }
-      if (parts[2] === 'conejos') return (data.conejos || []).filter(c => c.alumno_id === id);
+      if (parts[2] === 'conejos') return (data.alumnos_conejos || []).filter(c => c.alumno_id === id);
       if (parts[2] === 'notas-examenes') return (data.notas_examenes || []).filter(n => n.alumno_id === id);
       if (parts[2] === 'notas-materias') return (data.notas_materias || []).filter(n => n.alumno_id === id);
     }
@@ -164,7 +173,9 @@ export async function apiGet(path) {
     // fallback: return whole data for convenience, or a key without leading slash
     const key = pathname.replace(/\//g,'');
     if (key && data[key]) return data[key];
-    return {};
+    // No match found in mock data
+    console.warn(`Mock route not found: ${path}`);
+    return null;
   }
 
   // real API

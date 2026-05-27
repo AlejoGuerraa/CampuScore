@@ -13,6 +13,11 @@ function safeIncluded(obj, candidates = []) {
   return null;
 }
 
+function renderMaybeName(val, fallback = "—") {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === "object") return val.nombre ?? val.name ?? val.id ?? fallback;
+  return val;
+}
 export default function AlumnoPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -158,8 +163,8 @@ export default function AlumnoPage() {
                   <div><strong>Nacionalidad:</strong> {alumno.nacionalidad ?? "—"}</div>
                   <div><strong>Teléfono:</strong> {alumno.telefono ?? "—"}</div>
                   <div><strong>Dirección:</strong> {alumno.direccion ?? "—"}</div>
-                  <div><strong>Carrera:</strong> {alumno.carrera ?? alumno.id_carrera}</div>
-                  <div><strong>Facultad:</strong> {alumno.facultad ?? alumno.id_facultad}</div>
+                  <div><strong>Carrera:</strong> {renderMaybeName(alumno.carrera, alumno.id_carrera ?? "—")}</div>
+                  <div><strong>Facultad:</strong> {renderMaybeName(alumno.facultad, alumno.id_facultad ?? "—")}</div>
                 </div>
               </div>
             </section>

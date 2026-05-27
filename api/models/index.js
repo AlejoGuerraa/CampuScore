@@ -77,6 +77,19 @@ alumnos_conejos.belongsTo(alumnos, {
   as: "alumno"
 });
 
+// Exponer relación directa al join table para permitir includes del tipo
+// { model: alumnos_conejos, as: 'alumnos_conejos' } desde el modelo alumnos
+alumnos.hasMany(alumnos_conejos, {
+  foreignKey: "alumno_id",
+  as: "alumnos_conejos",
+});
+
+// También útil desde el lado de conejos
+conejos.hasMany(alumnos_conejos, {
+  foreignKey: "conejo_id",
+  as: "alumnos_conejos",
+});
+
 
 // ---------- MATERIAS → NOTAS EXÁMENES ----------
 materias.hasMany(notas_examenes, {

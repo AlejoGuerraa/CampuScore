@@ -73,8 +73,8 @@ export default function AlertasPerformance() {
                     {alumno.nombre} {alumno.apellido}
                   </h3>
                   <p className="dni">DNI: {alumno.dni}</p>
-                  {alumno.carrera && <p className="carrera">📚 {alumno.carrera}</p>}
-                  {alumno.facultad && <p className="facultad">🏫 {alumno.facultad}</p>}
+                  {alumno.carrera && <p className="carrera">📚 {(typeof alumno.carrera === 'object' ? (alumno.carrera.nombre ?? alumno.carrera.id) : alumno.carrera)}</p>}
+                  {alumno.facultad && <p className="facultad">🏫 {(typeof alumno.facultad === 'object' ? (alumno.facultad.nombre ?? alumno.facultad.id) : alumno.facultad)}</p>}
                 </div>
 
                 <div className="riesgo-footer">
